@@ -21,9 +21,10 @@ export interface Filters {
 interface FilterBarProps {
   filters: Filters;
   onChange: (filters: Filters) => void;
+  showScoreSort?: boolean;
 }
 
-const FilterBar = ({ filters, onChange }: FilterBarProps) => {
+const FilterBar = ({ filters, onChange, showScoreSort }: FilterBarProps) => {
   const update = (key: keyof Filters, value: string) => {
     onChange({ ...filters, [key]: value });
   };
@@ -89,13 +90,15 @@ const FilterBar = ({ filters, onChange }: FilterBarProps) => {
       </Select>
 
       <Select value={filters.sort} onValueChange={(v) => update("sort", v)}>
-        <SelectTrigger className="w-full sm:w-[130px]">
+        <SelectTrigger className="w-full sm:w-[150px]">
           <SelectValue placeholder="Sort" />
         </SelectTrigger>
         <SelectContent className="bg-popover z-50">
           <SelectItem value="latest">Latest</SelectItem>
           <SelectItem value="oldest">Oldest</SelectItem>
           <SelectItem value="company">Company A-Z</SelectItem>
+          {showScoreSort && <SelectItem value="matchScore">Match Score</SelectItem>}
+          <SelectItem value="salary">Salary (High)</SelectItem>
         </SelectContent>
       </Select>
     </div>
