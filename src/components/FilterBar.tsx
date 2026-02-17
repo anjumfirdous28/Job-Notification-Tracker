@@ -7,6 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { allLocations, allModes, allExperience, allSources } from "@/data/jobs";
+import { allStatuses } from "@/hooks/use-job-status";
 import { Search } from "lucide-react";
 
 export interface Filters {
@@ -16,6 +17,7 @@ export interface Filters {
   experience: string;
   source: string;
   sort: string;
+  status: string;
 }
 
 interface FilterBarProps {
@@ -84,6 +86,18 @@ const FilterBar = ({ filters, onChange, showScoreSort }: FilterBarProps) => {
         <SelectContent className="bg-popover z-50">
           <SelectItem value="all">All Sources</SelectItem>
           {allSources.map((s) => (
+            <SelectItem key={s} value={s}>{s}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select value={filters.status} onValueChange={(v) => update("status", v)}>
+        <SelectTrigger className="w-full sm:w-[140px]">
+          <SelectValue placeholder="Status" />
+        </SelectTrigger>
+        <SelectContent className="bg-popover z-50">
+          <SelectItem value="all">All Statuses</SelectItem>
+          {allStatuses.map((s) => (
             <SelectItem key={s} value={s}>{s}</SelectItem>
           ))}
         </SelectContent>

@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { jobs, Job } from "@/data/jobs";
 import { useSavedJobs } from "@/hooks/use-saved-jobs";
 import { usePreferences } from "@/hooks/use-preferences";
+import { useJobStatus, JobStatus } from "@/hooks/use-job-status";
 import { computeMatchScore } from "@/lib/match-score";
 import JobCard from "@/components/JobCard";
 import JobDetailModal from "@/components/JobDetailModal";
@@ -11,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 const defaultFilters: Filters = {
   keyword: "",
@@ -19,6 +21,7 @@ const defaultFilters: Filters = {
   experience: "all",
   source: "all",
   sort: "latest",
+  status: "all",
 };
 
 const extractSalaryNum = (s: string): number => {
@@ -32,7 +35,15 @@ const Dashboard = () => {
   const [showOnlyMatches, setShowOnlyMatches] = useState(false);
   const { toggleSave, isSaved } = useSavedJobs();
   const { preferences, hasPreferences } = usePreferences();
+  const { getStatus, setStatus } = useJobStatus();
   const navigate = useNavigate();
+
+  const handleStatusChange = (id: number, status: JobStatus) => {
+    setStatus(id, status);
+    if (status !== "Not Applied") {
+      toast({ title: `Status updated: ${status}` });
+    }
+  };
 
   const scoredJobs = useMemo(() => {
     return jobs.map((job) => ({
@@ -56,6 +67,7 @@ const Dashboard = () => {
     if (filters.mode !== "all") result = result.filter((j) => j.mode === filters.mode);
     if (filters.experience !== "all") result = result.filter((j) => j.experience === filters.experience);
     if (filters.source !== "all") result = result.filter((j) => j.source === filters.source);
+    if (filters.status !== "all") result = result.filter((j) => getStatus(j.id) === filters.status);
 
     if (showOnlyMatches && hasPreferences) {
       result = result.filter((j) => j.matchScore >= preferences.minMatchScore);
@@ -68,7 +80,7 @@ const Dashboard = () => {
     else if (filters.sort === "salary") result.sort((a, b) => extractSalaryNum(b.salaryRange) - extractSalaryNum(a.salaryRange));
 
     return result;
-  }, [filters, scoredJobs, showOnlyMatches, hasPreferences, preferences.minMatchScore]);
+  }, [filters, scoredJobs, showOnlyMatches, hasPreferences, preferences.minMatchScore, getStatus]);
 
   return (
     <main className="px-3 py-4 max-w-[960px] mx-auto">
@@ -112,6 +124,8 @@ const Dashboard = () => {
             onToggleSave={toggleSave}
             onView={setViewJob}
             matchScore={hasPreferences ? job.matchScore : undefined}
+            status={getStatus(job.id)}
+            onStatusChange={handleStatusChange}
           />
         ))}
       </div>
