@@ -4,6 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bookmark, BookmarkCheck, ExternalLink, Eye } from "lucide-react";
 import { getScoreColor } from "@/lib/match-score";
+import { JobStatus, allStatuses, statusColor } from "@/hooks/use-job-status";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface JobCardProps {
   job: Job;
@@ -11,6 +19,8 @@ interface JobCardProps {
   onToggleSave: (id: number) => void;
   onView: (job: Job) => void;
   matchScore?: number;
+  status: JobStatus;
+  onStatusChange: (id: number, status: JobStatus) => void;
 }
 
 const sourceBadgeClass: Record<string, string> = {
@@ -25,7 +35,7 @@ const formatPosted = (days: number) => {
   return `${days} days ago`;
 };
 
-const JobCard = ({ job, isSaved, onToggleSave, onView, matchScore }: JobCardProps) => {
+const JobCard = ({ job, isSaved, onToggleSave, onView, matchScore, status, onStatusChange }: JobCardProps) => {
   return (
     <Card className="transition-calm hover:shadow-md">
       <CardContent className="p-3 flex flex-col gap-1.5">
@@ -59,7 +69,19 @@ const JobCard = ({ job, isSaved, onToggleSave, onView, matchScore }: JobCardProp
         <p className="text-caption font-medium text-foreground">{job.salaryRange}</p>
 
         <div className="flex items-center justify-between pt-1 border-t border-border">
-          <span className="text-small text-muted-foreground">{formatPosted(job.postedDaysAgo)}</span>
+          <div className="flex items-center gap-1">
+            <span className="text-small text-muted-foreground">{formatPosted(job.postedDaysAgo)}</span>
+            <Select value={status} onValueChange={(v) => onStatusChange(job.id, v as JobStatus)}>
+              <SelectTrigger className={`h-6 text-small px-1.5 w-auto min-w-[90px] ${statusColor[status]}`}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-popover z-50">
+                {allStatuses.map((s) => (
+                  <SelectItem key={s} value={s} className="text-small">{s}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="flex gap-1">
             <Button variant="ghost" size="sm" onClick={() => onView(job)}>
               <Eye className="h-[16px] w-[16px]" />

@@ -2,12 +2,14 @@ import { useState, useMemo, useCallback } from "react";
 import { format } from "date-fns";
 import { jobs } from "@/data/jobs";
 import { usePreferences } from "@/hooks/use-preferences";
+import { useJobStatus } from "@/hooks/use-job-status";
 import { computeMatchScore } from "@/lib/match-score";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getScoreColor } from "@/lib/match-score";
-import { Mail, Clipboard, ExternalLink, AlertCircle, Sparkles } from "lucide-react";
+import { statusColor } from "@/hooks/use-job-status";
+import { Mail, Clipboard, ExternalLink, AlertCircle, Sparkles, Activity } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -22,11 +24,11 @@ interface DigestJob {
 }
 
 const DIGEST_KEY_PREFIX = "jobTrackerDigest_";
-
 const getDigestKey = () => `${DIGEST_KEY_PREFIX}${format(new Date(), "yyyy-MM-dd")}`;
 
 const Digest = () => {
   const { preferences, hasPreferences } = usePreferences();
+  const { changes } = useJobStatus();
   const navigate = useNavigate();
 
   const [digestJobs, setDigestJobs] = useState<DigestJob[]>(() => {
@@ -41,20 +43,6 @@ const Digest = () => {
   const [generated, setGenerated] = useState(() => !!localStorage.getItem(getDigestKey()));
 
   const generateDigest = useCallback(() => {
-    const scored = jobs
-      .map((job) => ({
-        id: job.id,
-        title: job.title,
-        company: job.company,
-        location: job.location,
-        experience: job.experience,
-        matchScore: computeMatchScore(job, preferences),
-        applyUrl: job.applyUrl,
-      }))
-      .sort((a, b) => b.matchScore - a.matchScore || a.id - b.id)
-      .slice(0, 10);
-
-    // Sort by matchScore desc, then postedDaysAgo asc (using id as proxy since lower id ≈ earlier)
     const topJobs = jobs
       .map((job) => ({ job, score: computeMatchScore(job, preferences) }))
       .sort((a, b) => b.score - a.score || a.job.postedDaysAgo - b.job.postedDaysAgo)
@@ -100,6 +88,14 @@ const Digest = () => {
     window.open(`mailto:?subject=${subject}&body=${body}`, "_self");
   }, [digestText]);
 
+  // Recent status updates — match jobId to job data
+  const recentUpdates = useMemo(() => {
+    return changes.slice(0, 10).map((c) => {
+      const job = jobs.find((j) => j.id === c.jobId);
+      return { ...c, title: job?.title ?? "Unknown", company: job?.company ?? "" };
+    });
+  }, [changes]);
+
   if (!hasPreferences) {
     return (
       <main className="flex flex-col items-center justify-center min-h-[70vh] px-3 text-center">
@@ -141,7 +137,6 @@ const Digest = () => {
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          {/* Email-style digest card */}
           <Card className="border">
             <CardContent className="p-3 flex flex-col gap-2">
               <div className="text-center border-b border-border pb-2">
@@ -187,7 +182,6 @@ const Digest = () => {
             </CardContent>
           </Card>
 
-          {/* Action buttons */}
           <div className="flex gap-1.5">
             <Button variant="outline" size="sm" onClick={copyToClipboard}>
               <Clipboard className="h-[14px] w-[14px]" />
@@ -203,6 +197,36 @@ const Digest = () => {
             Demo Mode: Daily 9AM trigger simulated manually.
           </p>
         </div>
+      )}
+
+      {/* Recent Status Updates */}
+      {recentUpdates.length > 0 && (
+        <Card className="border mt-4">
+          <CardContent className="p-3 flex flex-col gap-2">
+            <div className="flex items-center gap-1 border-b border-border pb-1.5">
+              <Activity className="h-[16px] w-[16px] text-muted-foreground" />
+              <h2 className="text-title font-serif text-foreground">Recent Status Updates</h2>
+            </div>
+            <div className="flex flex-col gap-1">
+              {recentUpdates.map((u, i) => (
+                <div key={i} className="flex items-center justify-between gap-2 py-0.5 border-b border-border/30 last:border-0">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-caption font-semibold text-foreground truncate">{u.title}</p>
+                    <p className="text-small text-muted-foreground">{u.company}</p>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Badge variant="outline" className={`text-small ${statusColor[u.status]}`}>
+                      {u.status}
+                    </Badge>
+                    <span className="text-small text-muted-foreground">
+                      {format(new Date(u.date), "MMM d")}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       )}
     </main>
   );
