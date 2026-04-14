@@ -72,7 +72,7 @@ const JobCard = ({ job, isSaved, onToggleSave, onView, matchScore, status, onSta
           <div className="flex items-center gap-1 min-w-0">
             <span className="text-small text-muted-foreground whitespace-nowrap">{formatPosted(job.postedDaysAgo)}</span>
             <Select value={status} onValueChange={(v) => onStatusChange(job.id, v as JobStatus)}>
-              <SelectTrigger className={`h-6 text-small px-1.5 w-auto min-w-[100px] ${statusColor[status]}`}>
+              <SelectTrigger className={`h-6 text-small px-1.5 w-auto min-w-[105px] ${statusColor[status]}`}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-popover z-50">
