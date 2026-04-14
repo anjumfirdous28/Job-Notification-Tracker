@@ -57,10 +57,10 @@ const Settings = () => {
         </div>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-0">
             <CardTitle className="text-title font-serif">Tracking Criteria</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3">
+          <CardContent className="flex flex-col gap-3 pt-3">
             <div className="flex flex-col gap-0.5">
               <Label htmlFor="keywords">Role Keywords</Label>
               <Input
