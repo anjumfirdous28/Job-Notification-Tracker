@@ -83,7 +83,7 @@ const Dashboard = () => {
   }, [filters, scoredJobs, showOnlyMatches, hasPreferences, preferences.minMatchScore, getStatus]);
 
   return (
-    <main className="px-3 py-4 max-w-[960px] mx-auto">
+    <main className="px-3 py-4 max-w-[960px] mx-auto overflow-x-hidden">
       {!hasPreferences && (
         <div className="flex items-center gap-1 p-2 mb-2 rounded-md border border-warning/30 bg-warning/10">
           <AlertCircle className="h-[16px] w-[16px] text-warning shrink-0" />

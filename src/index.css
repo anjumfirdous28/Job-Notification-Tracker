@@ -141,3 +141,16 @@
     transition: all 180ms ease-in-out;
   }
 }
+
+/* Fix slider thumb size */
+[role="slider"] {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* Fix checkbox size */
+button[role="checkbox"] {
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px;
+}
