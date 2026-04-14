@@ -33,7 +33,7 @@ const FilterBar = ({ filters, onChange, showScoreSort }: FilterBarProps) => {
 
   return (
     <div className="flex flex-col gap-1.5 sm:flex-row sm:flex-wrap sm:items-center">
-      <div className="relative flex-1 min-w-[200px]">
+      <div className="relative flex-1 min-w-[180px]">
         <Search className="absolute left-1 top-1/2 -translate-y-1/2 h-[16px] w-[16px] text-muted-foreground" />
         <Input
           placeholder="Search title or company…"
@@ -44,7 +44,7 @@ const FilterBar = ({ filters, onChange, showScoreSort }: FilterBarProps) => {
       </div>
 
       <Select value={filters.location} onValueChange={(v) => update("location", v)}>
-        <SelectTrigger className="w-full sm:w-[150px]">
+        <SelectTrigger className="w-full sm:w-[140px]">
           <SelectValue placeholder="Location" />
         </SelectTrigger>
         <SelectContent className="bg-popover z-50">
@@ -56,7 +56,7 @@ const FilterBar = ({ filters, onChange, showScoreSort }: FilterBarProps) => {
       </Select>
 
       <Select value={filters.mode} onValueChange={(v) => update("mode", v)}>
-        <SelectTrigger className="w-full sm:w-[130px]">
+        <SelectTrigger className="w-full sm:w-[120px]">
           <SelectValue placeholder="Mode" />
         </SelectTrigger>
         <SelectContent className="bg-popover z-50">
@@ -68,7 +68,7 @@ const FilterBar = ({ filters, onChange, showScoreSort }: FilterBarProps) => {
       </Select>
 
       <Select value={filters.experience} onValueChange={(v) => update("experience", v)}>
-        <SelectTrigger className="w-full sm:w-[140px]">
+        <SelectTrigger className="w-full sm:w-[120px]">
           <SelectValue placeholder="Experience" />
         </SelectTrigger>
         <SelectContent className="bg-popover z-50">
@@ -80,7 +80,7 @@ const FilterBar = ({ filters, onChange, showScoreSort }: FilterBarProps) => {
       </Select>
 
       <Select value={filters.source} onValueChange={(v) => update("source", v)}>
-        <SelectTrigger className="w-full sm:w-[130px]">
+        <SelectTrigger className="w-full sm:w-[120px]">
           <SelectValue placeholder="Source" />
         </SelectTrigger>
         <SelectContent className="bg-popover z-50">
@@ -92,7 +92,7 @@ const FilterBar = ({ filters, onChange, showScoreSort }: FilterBarProps) => {
       </Select>
 
       <Select value={filters.status} onValueChange={(v) => update("status", v)}>
-        <SelectTrigger className="w-full sm:w-[140px]">
+        <SelectTrigger className="w-full sm:w-[130px]">
           <SelectValue placeholder="Status" />
         </SelectTrigger>
         <SelectContent className="bg-popover z-50">
@@ -104,7 +104,7 @@ const FilterBar = ({ filters, onChange, showScoreSort }: FilterBarProps) => {
       </Select>
 
       <Select value={filters.sort} onValueChange={(v) => update("sort", v)}>
-        <SelectTrigger className="w-full sm:w-[150px]">
+        <SelectTrigger className="w-full sm:w-[130px]">
           <SelectValue placeholder="Sort" />
         </SelectTrigger>
         <SelectContent className="bg-popover z-50">

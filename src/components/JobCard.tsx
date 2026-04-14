@@ -68,11 +68,11 @@ const JobCard = ({ job, isSaved, onToggleSave, onView, matchScore, status, onSta
 
         <p className="text-caption font-medium text-foreground">{job.salaryRange}</p>
 
-        <div className="flex items-center justify-between pt-1 border-t border-border">
-          <div className="flex items-center gap-1">
-            <span className="text-small text-muted-foreground">{formatPosted(job.postedDaysAgo)}</span>
+        <div className="flex items-center justify-between pt-1 border-t border-border gap-1">
+          <div className="flex items-center gap-1 min-w-0">
+            <span className="text-small text-muted-foreground whitespace-nowrap">{formatPosted(job.postedDaysAgo)}</span>
             <Select value={status} onValueChange={(v) => onStatusChange(job.id, v as JobStatus)}>
-              <SelectTrigger className={`h-6 text-small px-1.5 w-auto min-w-[90px] ${statusColor[status]}`}>
+              <SelectTrigger className={`h-6 text-small px-1.5 w-auto min-w-[100px] ${statusColor[status]}`}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-popover z-50">
@@ -82,24 +82,21 @@ const JobCard = ({ job, isSaved, onToggleSave, onView, matchScore, status, onSta
               </SelectContent>
             </Select>
           </div>
-          <div className="flex gap-1">
-            <Button variant="ghost" size="sm" onClick={() => onView(job)}>
-              <Eye className="h-[16px] w-[16px]" />
-              <span className="hidden sm:inline">View</span>
+          <div className="flex gap-0.5 shrink-0">
+            <Button variant="ghost" size="sm" onClick={() => onView(job)} className="h-7 px-1.5">
+              <Eye className="h-[14px] w-[14px]" />
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => onToggleSave(job.id)}
-              className={isSaved ? "text-primary" : ""}
+              className={`h-7 px-1.5 ${isSaved ? "text-primary" : ""}`}
             >
-              {isSaved ? <BookmarkCheck className="h-[16px] w-[16px]" /> : <Bookmark className="h-[16px] w-[16px]" />}
-              <span className="hidden sm:inline">{isSaved ? "Saved" : "Save"}</span>
+              {isSaved ? <BookmarkCheck className="h-[14px] w-[14px]" /> : <Bookmark className="h-[14px] w-[14px]" />}
             </Button>
-            <Button variant="ghost" size="sm" asChild>
+            <Button variant="ghost" size="sm" asChild className="h-7 px-1.5">
               <a href={job.applyUrl} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="h-[16px] w-[16px]" />
-                <span className="hidden sm:inline">Apply</span>
+                <ExternalLink className="h-[14px] w-[14px]" />
               </a>
             </Button>
           </div>
